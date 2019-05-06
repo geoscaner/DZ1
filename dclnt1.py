@@ -21,11 +21,15 @@ def is_verb(word):
 
 def get_filenames(path):
     filenames = []
+    symptome = 0
     for dirname, dirs, files in os.walk(path, topdown=True):
+        if symptome:
+            break
         for file in files:
             if file.endswith('.py'):
                 filenames.append(os.path.join(dirname, file))
-                if len(filenames) > TOT_FILES:
+                if len(filenames) == TOT_FILES:
+                    symptome = 1
                     break
     print('total %s files' % len(filenames))
     # print('filenames',filenames)
@@ -64,7 +68,7 @@ def get_verbs_from_function_name(function_name):
 
 def get_all_words_in_path(path):
     trees = [t for t in get_trees(path) if t]
-    all_names=[]
+    all_names = []
     for t in trees:
         all_names.append(get_all_names(t))
     function_names = [f for f in flat(all_names) if not (f.startswith('__') and f.endswith('__'))]
@@ -100,6 +104,7 @@ if __name__ == '__main__':
     wds = []
     nms = []
     aws = []
+
     projects = [
         'django',
         'flask',
@@ -117,9 +122,8 @@ if __name__ == '__main__':
         print('path', path)
 
     print('WDS', wds)
-
     top_size = 200
     print('total %s words, %s unique' % (len(wds), len(set(wds))))
 
     for word, occurence in collections.Counter(wds).most_common(top_size):
-        print('ITOGO', word, occurence)
+        print('Total', word, occurence)
